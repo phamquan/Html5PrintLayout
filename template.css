@@ -1,0 +1,59 @@
+@charset "UTF-8";
+/* CSS Document */
+
+
+.page {
+	width:20.00cm;
+	height: 28.20cm;;
+	clear: both;
+	background-color:red;
+}
+
+.page-header {
+	height: 3.00cm;
+}
+
+.page-header-left {
+	float:left;
+	width: 70%;
+}
+.page-header-right {
+	float:right;
+	width: 30%;
+	height: 100%;
+	background-image:url(Hanwha-Life-Insurance-logo.jpg);
+	background-size: contain;
+	background-repeat:no-repeat;
+}
+
+.page-content-wrapper {
+	height: 22.00cm;
+	background-color: blue;
+}
+
+.page-content {
+	background-color: green;
+}
+
+.page-footer {
+}
+
+.page-footer-left {
+	width: 30%;
+	float:left;
+}
+.page-footer-center {
+	width: 50%;
+	float: left;
+}
+.page-footer-right {
+	float:left;
+}
+
+@media print  
+{
+    div{
+        page-break-inside: avoid;
+    }
+}
+

@@ -46,18 +46,24 @@ $(document).ready(function(){
 	  return $("#page-content-" + currentPageIndex).height();
   }
   
-  function createNewTable() {
+  function createNewTableWithHead(theadElement) {
 	   var Table = document.createElement('table');
 	   var Head = document.createElement('thead');
 	   Table.appendChild(Head);
+	   
+	   var theadElementClone = theadElement.clone();
+	   
+	   for (var i = 0; i < theadElementClone[0].children.length ; i++) {
+			Head.appendChild(theadElementClone[0].children[i]);
+		}
+	   
 	   var Body = document.createElement('tbody');
 	   Table.appendChild(Body);
 	   return {Table: Table, Head: Head, Body: Body};
   }
   
-  var currentTable;
-  
   function layoutTheTable(tableObject) {
+	  var currentTable;
 	  PageNode.PageContent.appendChild(tableObject);
 	  if (GetCurrentHeight() > GetMaximumHeight()) {
 		  var tableToInsert = $("#page-content-" + currentPageIndex).children().last();
@@ -66,15 +72,28 @@ $(document).ready(function(){
 		  var theadElement = $(tableToInsert[0]).children('thead');
 		  var tbodyElement = $(tableToInsert[0]).children('tbody');
 		  
-		  currentTable = createNewTable();
+		  var currentTable = createNewTableWithHead(theadElement);
 		  PageNode.PageContent.appendChild(currentTable.Table);
 		  
-		  for (var i = 0; i < theadElement[0].children.length ; i++) {
-			  currentTable.Head.appendChild(theadElement[0].children[i]);
+		  if (GetCurrentHeight() > GetMaximumHeight()) {
+			  $("#page-content-" + currentPageIndex).children().last().remove();
+			  
+			  PageNode = createNewPage();
+			  currentTable = createNewTableWithHead(theadElement);
+			  PageNode.PageContent.appendChild(currentTable.Table);
 		  }
 		  
 		  for (var i = 0; i < tbodyElement[0].children.length ; i++) {
-			  currentTable.Body.appendChild(tbodyElement[0].children[i]);
+			  var rowToInsert = tbodyElement[0].children[i];
+			  currentTable.Body.appendChild(rowToInsert);
+			  if (GetCurrentHeight() > GetMaximumHeight()) {
+				  $(currentTable.Body).children().last().remove();
+				  
+				  PageNode = createNewPage();
+				  currentTable = createNewTableWithHead(theadElement);
+				  PageNode.PageContent.appendChild(currentTable.Table);
+				  currentTable.Body.appendChild(rowToInsert);
+			  }
 		  }
 	  }
 	  

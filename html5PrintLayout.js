@@ -36,25 +36,73 @@ $(document).ready(function(){
 
     return {Page: Page, PageWrapper: PageWrapper, PageContent: PageContent, PageIndex: currentPageIndex};
   }
-
   var PageNode = createNewPage();
   
-  var currentHeight = 0;
-  for (i = 1; i < contentTree.length; i++) {
-  	var elementToInsert = contentTree[i];
-	var elementToInsertTag = elementToInsert;
-	if (elementToInsert.tagName == "P" || elementToInsert.tagName == "DIV") {
-	  PageNode.PageContent.appendChild(elementToInsert);
-	  if ($("#page-content-" + currentPageIndex).height() > $("#page-content-wrapper-" + currentPageIndex).height()) {
+  function GetMaximumHeight() {
+	  return $("#page-content-wrapper-" + currentPageIndex).height();
+  }
+  
+  function GetCurrentHeight() {
+	  return $("#page-content-" + currentPageIndex).height();
+  }
+  
+  function createNewTable() {
+	   var Table = document.createElement('table');
+	   var Head = document.createElement('thead');
+	   Table.appendChild(Head);
+	   var Body = document.createElement('tbody');
+	   Table.appendChild(Body);
+	   return {Table: Table, Head: Head, Body: Body};
+  }
+  
+  var currentTable;
+  
+  function layoutTheTable(tableObject) {
+	  PageNode.PageContent.appendChild(tableObject);
+	  if (GetCurrentHeight() > GetMaximumHeight()) {
+		  var tableToInsert = $("#page-content-" + currentPageIndex).children().last();
+		  tableToInsert.remove();
+		  
+		  var theadElement = $(tableToInsert[0]).children('thead');
+		  var tbodyElement = $(tableToInsert[0]).children('tbody');
+		  
+		  currentTable = createNewTable();
+		  PageNode.PageContent.appendChild(currentTable.Table);
+		  
+		  for (var i = 0; i < theadElement[0].children.length ; i++) {
+			  currentTable.Head.appendChild(theadElement[0].children[i]);
+		  }
+		  
+		  for (var i = 0; i < tbodyElement[0].children.length ; i++) {
+			  currentTable.Body.appendChild(tbodyElement[0].children[i]);
+		  }
+	  }
+	  
+	  
+	  //var tableElement = $("#page-content-" + currentPageIndex).children().last();
+	  //var theadElement = tableElement.find("thead");
+	  //theadElement.remove();
+//	  tableElement.remove();
+//	  var thElement = tableElement.find( "th" );
+//	  console.log(thElement);
+  }
+  
+  for (var i = 1; i < contentTree.length; i++) {
+  	var objectToInsert = contentTree[i];
+	var objectToInsertTag = objectToInsert;
+	if (objectToInsert.tagName == "P" || objectToInsert.tagName == "DIV") {
+	  PageNode.PageContent.appendChild(objectToInsert);
+	  if (GetCurrentHeight() > GetMaximumHeight()) {
 		  $("#page-content-" + currentPageIndex).children().last().remove();
 		  footerContext.currentPage = PageNode.PageIndex;
 		  PageNode.Page.appendChild($.parseHTML(footerTemplate(footerContext))[1]);
 		  PageNode = createNewPage();
-		  PageNode.PageContent.appendChild(elementToInsert);
+		  PageNode.PageContent.appendChild(objectToInsert);
 	  }
 	}
-//	else if (elementToInsert.tagName() = "table") {	
-//	}
+	else if (objectToInsert.tagName == "TABLE") {
+		layoutTheTable(objectToInsert);
+	}
   }
   
 });

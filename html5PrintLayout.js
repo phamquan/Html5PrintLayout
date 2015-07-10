@@ -33,6 +33,8 @@ $(document).ready(function(){
     PageContent.className = "page-content";
     PageContent.id = "page-content-" + currentPageIndex;
     PageWrapper.appendChild(PageContent);
+	
+	PageContent.appendChild(document.createElement('p'));
 
     return {Page: Page, PageWrapper: PageWrapper, PageContent: PageContent, PageIndex: currentPageIndex};
   }
